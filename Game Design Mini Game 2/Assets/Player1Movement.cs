@@ -15,6 +15,10 @@ public class Player1Movement : MonoBehaviour
 
 	private bool isMoving = false;
 
+	private Vector3 moveL = Vector3.left * 5;
+	private Vector3 moveR = Vector3.right * 5;
+	private string dir;
+
 	void Start () 
 	{
 
@@ -37,14 +41,17 @@ public class Player1Movement : MonoBehaviour
 			TimerReset();
 		}
 
-		if(
+		if(Input.GetKey("d"))
+		{
+
+		}
 	}
 
 	void playerMove()
 	{
 		if(DestNum < Destinations.Length)
 		{
-			P1.transform.position = Vector3.Lerp (P1.transform.position, Destinations[DestNum].position,(Time.time - timerOffset) * speed);
+			P1.transform.position = Vector3.Lerp (P1.transform.position, moveL,(Time.time - timerOffset) * speed);
 			delayCheck = true;
 		}
 	}	
