@@ -10,14 +10,14 @@ public class Player1Movement : MonoBehaviour
 	private GameObject P2;
 
 	private float timerOffset;
-	public float firstDelay;
-	private float origTime;
+	private bool isMovingR = false;
+	private bool isMovingL = false;
+	private Vector3 moveL = new Vector3 (-5, 0, 0);
+	private Vector3 moveR = new Vector3 (5, 0, 0);
 
-	private bool isMoving = false;
+	private float dist; 
 
-	private Vector3 moveL = Vector3.left * 5;
-	private Vector3 moveR = Vector3.right * 5;
-	private string dir;
+	public float speed = 0.5f;
 
 	void Start () 
 	{
@@ -27,33 +27,66 @@ public class Player1Movement : MonoBehaviour
 
 		P2 = GameObject.FindWithTag ("Player2");
 		P2ctrl = P2.GetComponent<CharacterController>();
+
+		dist = 2;
 	}
 	
 
-	void Update () 
+	void FixedUpdate () 
 	{
-		if(isMoving)
+		//Debug.Log(isMovingR);
+		if(isMovingR || isMovingL)
 		{
 			playerMove();
 		}
-		else if(!isMoving)
+
+		else if(!isMovingR || !isMovingL)
 		{
 			TimerReset();
 		}
 
-		if(Input.GetKey("d"))
+		if(Input.GetKey("d") && !isMovingL)
 		{
+
+			isMovingR = true;
+
+		}
+		if(Input.GetKey("a")&& !isMovingR)
+		{
+			isMovingL = true;
 
 		}
 	}
 
 	void playerMove()
 	{
-		if(DestNum < Destinations.Length)
+		if(isMovingR)
 		{
-			P1.transform.position = Vector3.Lerp (P1.transform.position, moveL,(Time.time - timerOffset) * speed);
-			delayCheck = true;
+			float vel = dist/(Time.time - timerOffset);
+			P1.rigidbody.velocity = new Vector3(vel,0,0);
+//			P1.transform.position = Vector3.Lerp (P1.transform.position, moveR,(Time.time - timerOffset) * speed);
+//			//P1.transform.position = Vector3.Lerp (P1.transform.position, moveR,0.4f);
+			if(P1.transform.position.x >= moveR.x)
+			{
+				P1.rigidbody.velocity = new Vector3(0,0,0);
+				isMovingR = false;
+				 
+
+			}
 		}
+
+		if(isMovingL)
+		{
+			float vel = dist/(Time.time - timerOffset);
+			P1.rigidbody.velocity = new Vector3(-vel,0,0);
+			//P1.transform.position = Vector3.Lerp (P1.transform.position,  moveL,(Time.time - timerOffset) * speed);
+			if(P1.transform.position.x <= moveL.x)
+			{
+				P1.rigidbody.velocity = new Vector3(0,0,0);
+				isMovingL = false;
+			}
+		}
+
 	}	
 
 	void TimerReset()
